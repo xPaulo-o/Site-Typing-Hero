@@ -10,23 +10,26 @@ const desktopApps = [
     icon: '/Images/GithubIcon.png',
     label: 'GitHub',
     top: '10%',
+    mobileTop: '17%',
   },
   {
     href: 'https://www.instagram.com/xpaulo_o2/',
     icon: '/Images/InstagramIcon.png',
     label: 'Instagram',
     top: '25.5%',
+    mobileTop: '28%',
   },
   {
     href: 'https://www.linkedin.com/in/paulo-augusto-b579513a1/',
     icon: '/Images/LinkedInIcon.png',
     label: 'LinkedIn',
     top: '41%',
+    mobileTop: '39%',
   },
 ];
 
 const appIconClass =
-  'absolute left-[8%] z-10 flex w-[6.4%] min-w-12 max-w-24 flex-col items-center justify-start rounded-sm px-1 py-1 transition-colors hover:bg-white/20 focus-visible:bg-white/20';
+  'absolute left-[8%] top-[var(--desktop-top)] z-10 flex w-[6.4%] min-w-12 max-w-24 flex-col items-center justify-start rounded-sm px-1 py-1 transition-colors hover:bg-white/20 focus-visible:bg-white/20 max-md:left-[25%] max-md:top-[var(--mobile-top)] max-md:w-[14%] max-md:min-w-0 max-md:max-w-none max-md:px-0.5 max-md:py-0.5';
 
 const gameDownloadHref = '/Arquivos/Typing_Hero.rar';
 
@@ -67,8 +70,20 @@ export default function Hero() {
     x: 22,
     y: 18,
   });
+  const [isMobileDownloadWarningOpen, setIsMobileDownloadWarningOpen] =
+    useState(false);
   const dragOffset = useRef({ x: 0, y: 0 });
   const activeWindow = useRef<WindowType>('typing');
+
+  function handleDownloadClick(event: React.MouseEvent<HTMLAnchorElement>) {
+    if (!window.matchMedia('(max-width: 767px)').matches) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    setIsMobileDownloadWarningOpen(true);
+  }
 
   function startDragging(
     event: React.PointerEvent<HTMLDivElement>,
@@ -143,29 +158,34 @@ export default function Hero() {
     <main className="grid h-dvh w-dvw place-items-center overflow-hidden">
       <div
         ref={screenRef}
-        className="relative"
-        style={{
-          width: 'min(100dvw, calc(100dvh * 1672 / 941))',
-          height: 'min(100dvh, calc(100dvw * 941 / 1672))',
-        }}
+        className="relative h-[min(100dvh,calc(100dvw*1536/1024))] w-[min(100dvw,calc(100dvh*1024/1536))] md:h-[min(100dvh,calc(100dvw*941/1672))] md:w-[min(100dvw,calc(100dvh*1672/941))]"
       >
         <Image
           src="/Images/heroImage.png"
           alt="Typing Hero background"
           fill
-          className="object-contain"
+          sizes="(min-width: 768px) and (min-aspect-ratio: 1672/941) 178vh, 100vw"
+          className="hidden object-contain md:block"
+          priority
+        />
+        <Image
+          src="/Images/MobileHero.png"
+          alt="Typing Hero mobile background"
+          fill
+          sizes="(max-width: 767px) and (max-aspect-ratio: 2/3) 100vw, (max-width: 767px) 67vh, 100vw"
+          className="object-contain md:hidden"
           priority
         />
         <button
           type="button"
           aria-label="Open error window"
-          className="absolute left-[13%] top-[88%] z-30 h-[10%] w-[22%] cursor-pointer"
+          className="absolute left-[13%] top-[88%] z-30 h-[10%] w-[22%] cursor-pointer max-md:left-[22%] max-md:top-[84%] max-md:h-[3.6%] max-md:w-[10%]"
           onPointerDown={() => setIsErrorWindowOpen(true)}
         />
         <button
           type="button"
           aria-label="Open easter egg window"
-          className="absolute left-[5.2%] top-[89.5%] z-40 h-[7%] w-[8.5%] cursor-pointer"
+          className="absolute left-[5.2%] top-[89.5%] z-40 h-[7%] w-[8.5%] cursor-pointer max-md:left-[21.5%] max-md:top-[84.2%] max-md:h-[3.2%] max-md:w-[3.7%]"
           onPointerDown={() => setIsEasterWindowOpen(true)}
         />
         <nav>
@@ -177,9 +197,14 @@ export default function Hero() {
               rel="noopener noreferrer"
               aria-label={app.label}
               className={appIconClass}
-              style={{ top: app.top }}
+              style={
+                {
+                  '--desktop-top': app.top,
+                  '--mobile-top': app.mobileTop,
+                } as React.CSSProperties
+              }
             >
-              <span className="relative block aspect-square w-[72%]">
+              <span className="relative block aspect-square w-[72%] max-md:w-[80%]">
                 <Image
                   src={app.icon}
                   alt=""
@@ -188,7 +213,7 @@ export default function Hero() {
                   className="object-contain"
                 />
               </span>
-              <span className="mt-1 text-center text-[clamp(10px,0.85vw,16px)] leading-none text-white [text-shadow:1px_1px_0_#000,-1px_1px_0_#000,1px_-1px_0_#000,-1px_-1px_0_#000]">
+              <span className="mt-1 text-center text-[clamp(10px,0.85vw,16px)] leading-none text-white [text-shadow:1px_1px_0_#000,-1px_1px_0_#000,1px_-1px_0_#000,-1px_-1px_0_#000] max-md:text-[clamp(9px,2.4vw,12px)]">
                 {app.label}
               </span>
             </Link>
@@ -197,10 +222,15 @@ export default function Hero() {
             type="button"
             aria-label="Typing Hero"
             className={`${appIconClass} w-[7.5%] min-w-16 max-w-28 cursor-pointer [&_*]:cursor-pointer`}
-            style={{ top: '57%' }}
+            style={
+              {
+                '--desktop-top': '57%',
+                '--mobile-top': '50%',
+              } as React.CSSProperties
+            }
             onClick={() => setIsWindowOpen(true)}
           >
-            <span className="relative block aspect-square w-[82%]">
+            <span className="relative block aspect-square w-[82%] max-md:w-[88%]">
               <Image
                 src="/Images/TypingHero.png"
                 alt=""
@@ -209,7 +239,7 @@ export default function Hero() {
                 className="object-contain"
               />
             </span>
-            <span className="mt-1 text-center text-[clamp(10px,0.85vw,16px)] leading-none text-white [text-shadow:1px_1px_0_#000,-1px_1px_0_#000,1px_-1px_0_#000,-1px_-1px_0_#000]">
+            <span className="mt-1 text-center text-[clamp(10px,0.85vw,16px)] leading-none text-white [text-shadow:1px_1px_0_#000,-1px_1px_0_#000,1px_-1px_0_#000,-1px_-1px_0_#000] max-md:text-[clamp(9px,2.4vw,12px)]">
               Typing Hero
             </span>
           </button>
@@ -217,10 +247,15 @@ export default function Hero() {
             type="button"
             aria-label="Preview"
             className={`${appIconClass} cursor-pointer [&_*]:cursor-pointer`}
-            style={{ top: '73%' }}
+            style={
+              {
+                '--desktop-top': '73%',
+                '--mobile-top': '63%',
+              } as React.CSSProperties
+            }
             onClick={() => setIsPreviewWindowOpen(true)}
           >
-            <span className="relative block aspect-square w-[72%]">
+            <span className="relative block aspect-square w-[72%] max-md:w-[80%]">
               <Image
                 src="/Images/Gallery.png"
                 alt=""
@@ -229,14 +264,14 @@ export default function Hero() {
                 className="object-contain"
               />
             </span>
-            <span className="mt-1 text-center text-[clamp(10px,0.85vw,16px)] leading-none text-white [text-shadow:1px_1px_0_#000,-1px_1px_0_#000,1px_-1px_0_#000,-1px_-1px_0_#000]">
+            <span className="mt-1 text-center text-[clamp(10px,0.85vw,16px)] leading-none text-white [text-shadow:1px_1px_0_#000,-1px_1px_0_#000,1px_-1px_0_#000,-1px_-1px_0_#000] max-md:text-[clamp(9px,2.4vw,12px)]">
               Preview
             </span>
           </button>
         </nav>
         {isWindowOpen && (
           <div
-            className="absolute z-20 aspect-[577/433] w-[36%] max-w-[577px] min-w-64"
+            className="absolute z-20 aspect-[577/433] w-[36%] max-w-[577px] min-w-64 max-md:!left-[22%] max-md:!top-[27%] max-md:w-[58%] max-md:min-w-0"
             style={{
               left: `${windowPosition.x}%`,
               top: `${windowPosition.y}%`,
@@ -256,6 +291,7 @@ export default function Hero() {
               aria-label="Download Typing Hero"
               className="absolute left-[27.5%] top-[51.5%] z-30 h-[15%] w-[44.5%] cursor-pointer"
               onPointerDown={(event) => event.stopPropagation()}
+              onClick={handleDownloadClick}
             />
             <div
               className="absolute left-[13%] top-[12%] z-20 h-[7%] w-[71%] cursor-move touch-none"
@@ -275,7 +311,7 @@ export default function Hero() {
         )}
         {isErrorWindowOpen && (
           <div
-            className="absolute z-20 aspect-[577/433] w-[36%] max-w-[577px] min-w-64"
+            className="absolute z-20 aspect-[577/433] w-[36%] max-w-[577px] min-w-64 max-md:!left-[22%] max-md:!top-[29%] max-md:w-[58%] max-md:min-w-0"
             style={{
               left: `${errorWindowPosition.x}%`,
               top: `${errorWindowPosition.y}%`,
@@ -309,7 +345,7 @@ export default function Hero() {
         )}
         {isEasterWindowOpen && (
           <div
-            className="absolute z-20 aspect-[712/350] w-[44%] max-w-[712px] min-w-72"
+            className="absolute z-20 aspect-[712/350] w-[44%] max-w-[712px] min-w-72 max-md:!left-[20%] max-md:!top-[34%] max-md:w-[62%] max-md:min-w-0"
             style={{
               left: `${easterWindowPosition.x}%`,
               top: `${easterWindowPosition.y}%`,
@@ -350,7 +386,7 @@ export default function Hero() {
         )}
         {isPreviewWindowOpen && (
           <div
-            className="absolute z-20 aspect-[1672/941] w-[56%] max-w-[900px] min-w-96"
+            className="absolute z-20 aspect-[1672/941] w-[56%] max-w-[900px] min-w-96 max-md:!left-[19%] max-md:!top-[36%] max-md:w-[64%] max-md:min-w-0"
             style={{
               left: `${previewWindowPosition.x}%`,
               top: `${previewWindowPosition.y}%`,
@@ -380,6 +416,39 @@ export default function Hero() {
             >
               x
             </button>
+          </div>
+        )}
+        {isMobileDownloadWarningOpen && (
+          <div className="absolute left-[19%] top-[36%] z-40 aspect-[577/433] w-[64%] md:hidden">
+            <Image
+              src="/Images/normalwindow.png"
+              alt="Mobile download warning"
+              fill
+              sizes="360px"
+              className="object-contain"
+              priority
+            />
+            <p className="absolute left-[15%] top-[35%] z-10 w-[70%] text-center text-[clamp(12px,3vw,16px)] font-bold leading-tight text-[#2a2119]">
+              Projeto ainda nao disponivel para mobile somente desktop, para baixar use um computador
+            </p>
+            <button
+              type="button"
+              aria-label="Close mobile download warning"
+              className="absolute left-[87.5%] top-[12.5%] z-20 h-[6%] w-[5%] cursor-pointer"
+              onPointerDown={(event) => {
+                event.stopPropagation();
+                setIsMobileDownloadWarningOpen(false);
+              }}
+            />
+            <button
+              type="button"
+              aria-label="OK"
+              className="absolute left-[31%] top-[69%] z-20 h-[14%] w-[38%] cursor-pointer"
+              onPointerDown={(event) => {
+                event.stopPropagation();
+                setIsMobileDownloadWarningOpen(false);
+              }}
+            />
           </div>
         )}
       </div>
