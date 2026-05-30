@@ -7,21 +7,21 @@ import { useRef, useState } from 'react';
 const desktopApps = [
   {
     href: 'https://github.com/xPaulo-o/typing_hero',
-    icon: '/Images/GithubIcon.png',
+    icon: '/Images/GithubIcon-small.png',
     label: 'GitHub',
     top: '10%',
     mobileTop: '17%',
   },
   {
     href: 'https://www.instagram.com/xpaulo_o2/',
-    icon: '/Images/InstagramIcon.png',
+    icon: '/Images/InstagramIcon-small.png',
     label: 'Instagram',
     top: '25.5%',
     mobileTop: '28%',
   },
   {
     href: 'https://www.linkedin.com/in/paulo-augusto-b579513a1/',
-    icon: '/Images/LinkedInIcon.png',
+    icon: '/Images/LinkedInIcon-small.png',
     label: 'LinkedIn',
     top: '41%',
     mobileTop: '39%',
@@ -166,15 +166,15 @@ export default function Hero() {
           fill
           sizes="(min-width: 768px) and (min-aspect-ratio: 1672/941) 178vh, 100vw"
           className="hidden object-contain md:block"
-          priority
+          fetchPriority="high"
         />
         <Image
-          src="/Images/MobileHero.png"
+          src="/Images/MobileHero.jpg"
           alt="Typing Hero mobile background"
           fill
           sizes="(max-width: 767px) and (max-aspect-ratio: 2/3) 100vw, (max-width: 767px) 67vh, 100vw"
           className="object-contain md:hidden"
-          priority
+          fetchPriority="high"
         />
         <button
           type="button"
@@ -232,7 +232,7 @@ export default function Hero() {
           >
             <span className="relative block aspect-square w-[82%] max-md:w-[88%]">
               <Image
-                src="/Images/TypingHero.png"
+                src="/Images/TypingHero-small.png"
                 alt=""
                 fill
                 sizes="96px"
@@ -257,7 +257,7 @@ export default function Hero() {
           >
             <span className="relative block aspect-square w-[72%] max-md:w-[80%]">
               <Image
-                src="/Images/Gallery.png"
+                src="/Images/Gallery-small.png"
                 alt=""
                 fill
                 sizes="80px"
