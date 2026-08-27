@@ -13,7 +13,7 @@ const desktopApps = [
     mobileTop: '17%',
   },
   {
-    href: 'https://www.instagram.com/xpaulo_o2/',
+    href: 'https://www.instagram.com/xpaulo_o/',
     icon: '/Images/InstagramIcon-small.png',
     label: 'Instagram',
     top: '25.5%',
